@@ -1,0 +1,73 @@
+<<<
+
+[#SCBNDSRD,reftext="{SCBNDSRD}"]
+=== {SCBNDSRD}
+
+include::new_encoding_note.adoc[]
+
+Synopsis::
+{SCBNDSRD_DESC}
+
+Mnemonic::
+`{scbndsrd_lc} {cd}, {cs1}, rs2`
+
+Encoding::
+include::wavedrom/scbndsrd_32bit.adoc[]
+
+Description::
+Copy the capability from register `{cs1}` to register `{cd}`.
+Set the base address of its bounds to the value of `{cs1}.address`.
++
+Set the length of its bounds to a the largest representable length value that is both
++
+--
+- no larger than `rs2[XLEN-1:0]` and
+- precisely representable given this base address.
+--
++
+Set `{cd}.tag=0` if `{cs1}.tag=0`, `{cs1}` is sealed or if `{cd}` 's bounds exceed `{cs1}` 's bounds.
++
+include::malformed_cs1_clear_tag.adoc[]
+
+[NOTE]
+=====
+If the result in `{cd}` is tagged, then its base _is_ `{cs1}.address`, as with <<SCBNDS>>.
+The result in `{cd}` will be zero-length if and only if `rs2[XLEN-1:0]` is zero.
+In practice, capability encodings offer byte-granularity of bounds for capabilities
+of lengths up to some threshold
+between a few hundred or a few thousand bytes, depending on the encoding;
+for requested lenghts below this threshold, no rounding is required, and
+otherwise this threshold serves to guarantee a minimum length return from {SCBNDSRD}.
+=====
+
+[NOTE]
+=====
+The "largest representable length value precisely representable given this base address" is
+also the largest length `l` for which a <<SCBNDS>> instruction...
+
+- whose `rs2` register holds `l` and
+
+- whose `{cs1}` register holds a capability whose bounds cover the entire address space and
+  whose address is the given base address
+
+produces a tagged result in `{cd}`.
+This value may be efficiently found, for most capability encoding schemes,
+by counting trailing zeros in the desired base address and
+computing the length that is a maximal mantissa shifted left by that count
+(that is, using the number of trailing zeros in the base address as the value's exponent).
+=====
+
+[NOTE]
+=====
+{cheri_base_ext_name} implementations which have
+a "maximum exponent" parameter `e` whose value is some `e<N>` (and not `ea`)
+may choose to restrict their search for "largest representable length"
+to those that would use an exponent at most `N`.
+=====
+
+Included in::
+{cheri_bndsrd_ext_name}
+
+Operation::
++
+TODO

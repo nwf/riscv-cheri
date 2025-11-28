@@ -187,6 +187,11 @@ endif::support_varxlen[]
 :SCBNDSR_LC:   ybndsrw
 :SCBNDSR_DESC: Write capability bounds, rounding up if required
 
+:cheri_bndsrd_ext_name: Zybndsrd
+:SCBNDSRD:      YBNDSRDW
+:SCBNDSRD_LC:   ybndsrdw
+:SCBNDSRD_DESC: Write capability bounds, rounding down if required
+
 :GCTAG:        YTAGR
 :GCTAG_LC:     ytagr
 :GCTAG_DESC:   Read {ctag}
